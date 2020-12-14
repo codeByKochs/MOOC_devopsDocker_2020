@@ -1,0 +1,40 @@
+version: "3"
+
+services:
+    frontend:
+        image: frontend-example
+        container_name: exercise2.5-frontend
+        ports:
+            - 5000:5000
+        environment:
+            - API_URL=http://localhost:8000
+
+    backend:
+        image: backend-example
+        container_name: exercise2.5-backend
+        ports:
+            - 8000:8000
+        environment:
+            - REDIS=redis
+            - FRONT_URL=http://localhost:5000            
+            - DB_USERNAME=postgres
+            - DB_PASSWORD=safepw
+            - DB_NAME=postgres
+            - DB_HOST=db
+
+        restart: unless-stopped
+        volumes:
+            - ./logs.txt:/app/logs.txt
+
+    redis:
+        image: redis:latest
+        container_name: redis
+        ports:
+            - 6379:6379
+
+    db:
+        image: postgres
+        container_name: postgres
+        restart: unless-stopped
+        environment:
+            - POSTGRES_PASSWORD=safepw

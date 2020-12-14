@@ -1,0 +1,23 @@
+FROM alpine
+
+WORKDIR /usr/app
+
+RUN apk update && \
+    apk add --no-cache git && \
+    apk add --no-cache nodejs && \
+    apk add --no-cache nodejs-npm && \
+    git clone https://github.com/docker-hy/frontend-example-docker.git . && \
+    npm install && \
+    npm install -g serve && \
+    npm run build && \
+    apk del git && \
+    apk del nodejs-npm && \
+    ls | grep -v dist | xargs rm -R && \
+    adduser -D app && \
+    chown -R app /usr/app
+
+USER app
+
+EXPOSE 5000
+
+CMD ["serve", "-s", "-l", "5000", "dist"]
