@@ -1,0 +1,36 @@
+version: "3"
+
+services:
+    frontend:
+        container_name: exercise2.7.frontend
+        build:
+            context: https://github.com/docker-hy/ml-kurkkumopo-frontend.git
+        restart: unless-stopped
+        ports:
+            - 3000:3000
+        depends_on:
+            - backend
+
+    backend:
+        container_name: exercise2.7.backend
+        build:
+            context: https://github.com/docker-hy/ml-kurkkumopo-backend.git
+        restart: unless-stopped
+        ports: 
+            - 5000:5000
+        volumes:
+            - model:/src/model
+        depends_on:
+            - training
+
+    training:
+        container_name: exercise2.7.training
+        build:
+            context: https://github.com/docker-hy/ml-kurkkumopo-training.git
+        volumes:
+            - model:/src/model
+            - imgs:/src/imgs
+
+volumes:
+    imgs:
+    model:
